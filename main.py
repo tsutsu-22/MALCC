@@ -227,8 +227,8 @@ def merge(svdir,num_pattern,th,savename):
 def main():
   ####param####
   num_pattern=500  #重回帰分析のパターン数
-  name='angora3'
-  img=f'images/{name}.jpg' #入力画像名
+  name='angora3'  #入力画像名
+  img=f'images/{name}.jpg'
   svdir=f'results/{name}'
   savename='test_output'
   ths=[0.05,0.03,0.01,0.005,0.001] #上位何％を表示するか
