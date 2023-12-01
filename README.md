@@ -9,7 +9,7 @@ cat.jpg(元画像)
 
 ![important area](results/lpanda1/501/merge/0.01.png)
 
-右目の緑(G)を分類根拠として使っているようです。
+顔のうち耳の緑(G)を分類根拠として使っているようです。
 
 # 使い方
 
