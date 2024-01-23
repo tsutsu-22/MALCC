@@ -1,5 +1,5 @@
 # MALCC
-LIMEという予測結果の解釈を画像分類のRGBチャンネルに拡張したデモになります。
+LIMEという予測結果の解釈を画像分類のRGBチャンネルに拡張したMALCCのデモになります。
 
 cat.jpg(元画像)
 
@@ -9,7 +9,7 @@ cat.jpg(元画像)
 
 ![important area](results/sample.png)
 
-顔のうち耳の緑(G)を分類根拠として使っているようです。
+奥のブロッコリーのGを分類根拠として使っているようです。
 
 # 使い方
 
@@ -25,6 +25,7 @@ pip install -r requirements.txt
 ```
 
 パラメータや画像の設定→下記paramsを参照
+※初期設定はブロッコリーの画像分類とsuperpixelによるMALCCになっています。
 
 以下を実行する。
 ```
