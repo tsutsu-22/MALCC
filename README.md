@@ -3,7 +3,7 @@ LIMEという予測結果の解釈を画像分類のRGBチャンネルに拡張�
 
 cat.jpg(元画像)
 
-![ori](images/lpanda1.jpg)
+![ori](images/broccoli.jpg)
 
 ↑をtiger catと推定するときの重要領域と色を可視化することができます。
 
