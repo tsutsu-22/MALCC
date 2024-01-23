@@ -1,4 +1,4 @@
-# RGB-LIME
+# MALCC
 LIMEという予測結果の解釈を画像分類のRGBチャンネルに拡張したデモになります。
 
 cat.jpg(元画像)
@@ -13,15 +13,25 @@ cat.jpg(元画像)
 
 # 使い方
 
-以下を実行するだけです。
+clone
+```
+git clone https://github.com/tsutsu-22/MALCC
+```
+
+パッケージは以下でインストールできます。
+※gpuがない方はrequirements.txtの中のtensorflow-gpuをtensorflowに変更してください。
+```
+pip install -r requirements.txt
+```
+
+パラメータや画像の設定→下記paramsを参照
+
+以下を実行する。
 ```
 python main.py
 ```
 
-パッケージは以下でインストールできます。
-```
-pip install -r requirements.txt
-```
+
 
 ## params
 以下の内容を変更することが可能です。
