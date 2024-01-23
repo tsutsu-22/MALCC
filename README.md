@@ -1,11 +1,11 @@
 # MALCC
 LIMEという予測結果の解釈を画像分類のRGBチャンネルに拡張したMALCCのデモになります。
 
-cat.jpg(元画像)
+broccoli.jpg(元画像)
 
 ![ori](images/broccoli.jpg)
 
-↑をtiger catと推定するときの重要領域と色を可視化することができます。
+↑をbroccoliと推定するときの重要領域と色を可視化することができます。
 
 ![important area](results/sample.png)
 
