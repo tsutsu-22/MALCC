@@ -41,7 +41,7 @@ def perturb_image(img,perturbation,segments):
 def cos_sim(v1, v2):
     return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
 
-#rgb-limeを定義
+#malccを定義
 def malcc(img, svdir, savename, num_pattern,mode='sp',block=5):
   #学習済みモデル読み込み
   model = inc_net.InceptionV3() #Load pretrained model
@@ -49,7 +49,7 @@ def malcc(img, svdir, savename, num_pattern,mode='sp',block=5):
   #画像読み込みと前処理
   img_pil = tf.keras.preprocessing.image.load_img(img, target_size=(299, 299))
   Xi=np.array(img_pil)/255
-  skimage.io.imsave(svdir+'/ori/'+savename+'.png',Xi*255) #save original img
+  skimage.io.imsave(svdir+'/ori/'+savename+'.png',(Xi*255).astype(np.uint8)) #save original img
 
   #推論
   preds = model.predict(Xi[np.newaxis,:,:,:])
@@ -78,15 +78,15 @@ def malcc(img, svdir, savename, num_pattern,mode='sp',block=5):
             k=k+1
     
     superpixels=seg
-     
+  
   num_superpixels = np.unique(superpixels).shape[0]
   #print(num_superpixels)
-  skimage.io.imsave(svdir+'/superpixel/'+savename+'.png',skimage.segmentation.mark_boundaries(Xi*255, superpixels)) #save superpixel img
+  skimage.io.imsave(svdir+'/superpixel/'+savename+'.png',(skimage.segmentation.mark_boundaries(Xi*255, superpixels)).astype(np.uint8)) #save superpixel img
 
   #マスク画像を任意のパターンランダムに用意
   num_perturb = num_pattern
   perturbations = np.random.binomial(1, 0.5, size=(num_perturb, num_superpixels,3))
-  skimage.io.imsave(svdir+'/mask/'+savename+'.png',perturb_image(Xi*255,perturbations[0],superpixels)) #save mask img
+  skimage.io.imsave(svdir+'/mask/'+savename+'.png',(perturb_image(Xi*255,perturbations[0],superpixels)).astype(np.uint8)) #save mask img
 
   #推論を回す
   predictions = []
@@ -226,8 +226,8 @@ def merge(svdir,num_pattern,th,savename):
 
 def main():
   ####param####
-  num_pattern=500  #重回帰分析のパターン数
-  name='angora3'  #入力画像名
+  num_pattern=400  #重回帰分析のパターン数
+  name='broccoli'  #入力画像名
   img=f'images/{name}.jpg'
   svdir=f'results/{name}'
   savename='test_output'
@@ -236,7 +236,7 @@ def main():
 
   svdir_pattern=os.path.join(svdir,str(num_pattern))
   mkdir(svdir_pattern)
-  sp,coeff=malcc(img, svdir_pattern, savename, num_pattern,mode='sq',block=7)
+  sp,coeff=malcc(img, svdir_pattern, savename, num_pattern,mode='sp',block=5)
   coeff2img(svdir, num_pattern,sp,coeff,savename)
   for th in ths:
     display_top(th,svdir,num_pattern,savename)

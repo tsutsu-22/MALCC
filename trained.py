@@ -36,11 +36,11 @@ def sp_num(sp_dir):
 def display_top(th,svdir,num_pattern,savename):
     dir=svdir
 
-    create_folder_if_not_exists(os.path.join(dir,str(num_pattern),'top','cmap_th',str(th)))
-    create_folder_if_not_exists(os.path.join(dir,str(num_pattern),'top','cmap_th_max',str(th)))
+    create_folder_if_not_exists(os.path.join('results',dir,str(num_pattern),'top','cmap_th',str(th)))
+    create_folder_if_not_exists(os.path.join('results',dir,str(num_pattern),'top','cmap_th_max',str(th)))
 
 
-    image = Image.open(os.path.join(dir,str(num_pattern),'colormap',savename+'.png'))
+    image = Image.open(os.path.join('results',dir,str(num_pattern),'colormap',savename+'.png'))
     array = np.array(image)
     
     th_arr = th_array(array, th)
@@ -48,33 +48,33 @@ def display_top(th,svdir,num_pattern,savename):
     img = Image.fromarray((th_arr * 255).astype(np.uint8))
     img_max = Image.fromarray((th_arr_max * 255).astype(np.uint8))
     #%のとき
-    img.save(os.path.join(dir,str(num_pattern),'top','cmap_th',str(th),savename+".png"))
-    img_max.save(os.path.join(dir,str(num_pattern),'top','cmap_th_max',str(th),savename+".png"))
+    img.save(os.path.join('results',dir,str(num_pattern),'top','cmap_th',str(th),savename+".png"))
+    img_max.save(os.path.join('results',dir,str(num_pattern),'top','cmap_th_max',str(th),savename+".png"))
 
 def merge(svdir,num_pattern,th,savename):
-    ori=Image.open(os.path.join(svdir,str(num_pattern),'ori',savename+'.png'))
-    mask=Image.open(os.path.join(svdir,str(num_pattern),'top/cmap_th_max',str(th),savename+'.png'))
-    colormap=Image.open(os.path.join(svdir,str(num_pattern),'colormap',savename+'.png'))
+    ori=Image.open(os.path.join('results',svdir,str(num_pattern),'ori',savename+'.png'))
+    mask=Image.open(os.path.join('results',svdir,str(num_pattern),'top/cmap_th_max',str(th),savename+'.png'))
+    colormap=Image.open(os.path.join('results',svdir,str(num_pattern),'colormap',savename+'.png'))
 
     orimask=Image.blend(ori,mask,0.5)
-    save_dir=os.path.join(svdir,str(num_pattern),'merge')
+    save_dir=os.path.join('results',svdir,str(num_pattern),'merge')
     orimask.save(os.path.join(save_dir,str(th)+'.png'))
 
 
     oricmap=Image.blend(ori,colormap,0.5)
-    save_dir=os.path.join(svdir,str(num_pattern),'merge')
+    save_dir=os.path.join('results',svdir,str(num_pattern),'merge')
     oricmap.save(os.path.join(save_dir,'all'+'.png'))
 
     
 
 def main():
   ####param####
-  num_pattern=1000  #重回帰分析のパターン数
-  name='strawberry'
+  num_pattern=400  #重回帰分析のパターン数
+  name='broccoli'
   img=f'{name}.jpg' #入力画像名
   svdir=f'{name}'
   savename='test_output'
-  ths=[0.05,0.03,0.01,0.005] #上位何％を表示するか
+  ths=[0.10,0.20] #上位何％を表示するか
   #############
 
 
