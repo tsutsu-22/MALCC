@@ -7,7 +7,7 @@ cat.jpg(元画像)
 
 ↑をtiger catと推定するときの重要領域と色を可視化することができます。
 
-![important area](results/lpanda1/501/merge/0.01.png)
+![important area](results/sample.png)
 
 顔のうち耳の緑(G)を分類根拠として使っているようです。
 
