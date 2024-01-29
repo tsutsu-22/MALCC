@@ -39,7 +39,7 @@ python main.py
 ```python
   ####param####
   num_pattern=500  #重回帰分析のパターン数
-  name='angora3'　#入力画像名
+  name='broccoli'　#入力画像名
   img=f'images/{name}.jpg'
   svdir=f'results/{name}'
   savename='test_output'
