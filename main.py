@@ -16,14 +16,14 @@ def mkdir(svdir_pattern):
 
   os.makedirs(svdir_pattern, exist_ok=True) #make save dir
 
-  # save dir の中身のリスト
+  # save dir list
   directories = ["colormap", "mask", "merge", "ori", "superpixel","top"]
 
-  # save dir の中身を作成
+  # make save dir contents
   for directory in directories:
       os.makedirs(os.path.join(svdir_pattern,directory), exist_ok=True)
 
-#マスク画像生成関数
+# mask image generate function
 def perturb_image(img,perturbation,segments):
 
   mask = np.zeros(img.shape)
@@ -37,21 +37,21 @@ def perturb_image(img,perturbation,segments):
 
   return perturbed_image
 
-#コサイン距離計算
+# calc cos distance
 def cos_sim(v1, v2):
     return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
 
-#malccを定義
+# definition malcc
 def malcc(img, svdir, savename, num_pattern,mode='sp',block=5):
-  #学習済みモデル読み込み
+  # Load pretrained model
   model = inc_net.InceptionV3() #Load pretrained model
 
-  #画像読み込みと前処理
+  # load img and preparation
   img_pil = tf.keras.preprocessing.image.load_img(img, target_size=(299, 299))
   Xi=np.array(img_pil)/255
   skimage.io.imsave(svdir+'/ori/'+savename+'.png',(Xi*255).astype(np.uint8)) #save original img
 
-  #推論
+  #predict
   preds = model.predict(Xi[np.newaxis,:,:,:])
   for x in decode_predictions(preds)[0]:
     print(x)
@@ -60,13 +60,14 @@ def malcc(img, svdir, savename, num_pattern,mode='sp',block=5):
   print(top_pred_classes,preds[0,top_pred_classes[0]])
   #print(preds[0,top_pred_classes[0]])
 
-  #正方形分け
+  # area segmentation
+  # superpixel or square
   if mode=='sp':
-    #スーパーピクセルとその数
+    #superpixel settings
     superpixels = skimage.segmentation.quickshift(Xi, kernel_size=4,max_dist=200, ratio=0.2)
   elif mode=='sq':
     width, height = 299,299
-    # ゼロ配列の作成
+    # make zero array
     seg = np.zeros((height, width), dtype=np.uint8)
     re_width=width
     seg_w=round(re_width/block)
@@ -83,12 +84,12 @@ def malcc(img, svdir, savename, num_pattern,mode='sp',block=5):
   #print(num_superpixels)
   skimage.io.imsave(svdir+'/superpixel/'+savename+'.png',(skimage.segmentation.mark_boundaries(Xi*255, superpixels)).astype(np.uint8)) #save superpixel img
 
-  #マスク画像を任意のパターンランダムに用意
+  # preparate random mask image in some patterns
   num_perturb = num_pattern
   perturbations = np.random.binomial(1, 0.5, size=(num_perturb, num_superpixels,3))
   skimage.io.imsave(svdir+'/mask/'+savename+'.png',(perturb_image(Xi*255,perturbations[0],superpixels)).astype(np.uint8)) #save mask img
 
-  #推論を回す
+  #predict
   predictions = []
   for pert in perturbations:
     perturbed_img = perturb_image(Xi,pert,superpixels)
@@ -97,10 +98,10 @@ def malcc(img, svdir, savename, num_pattern,mode='sp',block=5):
 
   predictions = np.array(predictions)
 
-  #元のマスクされていない画像
+  #original image (non-mask image)
   original_image = np.ones((num_superpixels,3)) #Perturbation with all superpixels enabled 
 
-  #nマスク画像と元画像のコサイン距離の計算
+  # calc cos distance
   distances=[]
   for i in range(num_perturb):
       distance=cos_sim(perturbations[i].flatten(),original_image.flatten())
@@ -110,11 +111,11 @@ def malcc(img, svdir, savename, num_pattern,mode='sp',block=5):
   kernel=np.mean(distances)
   
 
-  #カーネル関数の重み決定
+  # kernel weight
   kernel_width = kernel
   weights = np.sqrt(np.exp(-(distances**2)/kernel_width**2)) #Kernel function
 
-  #元画像の予測トップスコアとマスク画像の推論スコアの差
+  # Difference between the predicted top score of the original image and the inference score of the mask image
   ps=np.resize(perturbations,(num_perturb,num_superpixels*3))
   #print(ps.shape)
 
@@ -122,11 +123,12 @@ def malcc(img, svdir, savename, num_pattern,mode='sp',block=5):
   simpler_model = LinearRegression()
   simpler_model.fit(X=ps, y=predictions[:,:,class_to_explain], sample_weight=weights)
   coeff = simpler_model.coef_[0]
-  #回帰係数
+  # coeff check
   #print(coeff)
 
   return superpixels,coeff
 
+# coeff to colormap
 def coeff2map(sp,coeff,img_shape):
     min = np.min(coeff)
     max = np.max(coeff)
@@ -141,11 +143,13 @@ def coeff2map(sp,coeff,img_shape):
     
     return map
 
+# colormap to img
 def map2img(map):
     img = Image.fromarray((map * 255).astype(np.uint8))
     #img.save('coeff2imgtest.png')
     return img
 
+#coeff to image
 def coeff2img(svdir, num_pattern,sp,coeff,savename):
   dir=svdir
   times=str(num_pattern)
@@ -179,11 +183,11 @@ def th_array(array, n):
 def create_folder_if_not_exists(folder_path):
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
-        print("フォルダが作成されました:", folder_path)
+        print("folder created:", folder_path)
     else:
-        print("フォルダは既に存在します:", folder_path)
+        print("folder already exists:", folder_path)
 
-#スーパーピクセルの領域数を取得
+# Get number of superpixel regions
 def sp_num(sp_dir):
     array=np.load(sp_dir)
     unique_values, counts = np.unique(array, return_counts=True)
@@ -226,12 +230,12 @@ def merge(svdir,num_pattern,th,savename):
 
 def main():
   ####param####
-  num_pattern=400  #重回帰分析のパターン数
-  name='broccoli'  #入力画像名
+  num_pattern=400  #Number of patterns in multiple regression analysis
+  name='broccoli'  #input image name
   img=f'images/{name}.jpg'
   svdir=f'results/{name}'
   savename='test_output'
-  ths=[0.05,0.03,0.01,0.005,0.001] #上位何％を表示するか
+  ths=[0.05,0.03,0.01,0.005,0.001] #What percentage of the top should be displayed?
   #############
 
   svdir_pattern=os.path.join(svdir,str(num_pattern))
