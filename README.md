@@ -18,6 +18,10 @@ clone
 git clone https://github.com/tsutsu-22/MALCC
 ```
 
+```
+cd MALCC
+```
+
 The package can be installed with:
 *If you do not have a GPU, please change tensorflow-gpu in requirements.txt to tensorflow.
 ```
