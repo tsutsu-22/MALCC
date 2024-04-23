@@ -38,8 +38,12 @@ python main.py
 
 # Where Results are
 ```
-MALCC/results/bloccoli/merge/*.png
+MALCC/results/{jpg_name}/merge/*.png
 ```
+display like this (if you use strawberry)
+
+
+![folder_sample](results/sample2.png)
 
 ## params
 You can change the following contents.
