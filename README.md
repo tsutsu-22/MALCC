@@ -1,7 +1,7 @@
 # MALCC
 This is a demonstration of MALCC, which extends the interpretation of prediction results called LIME to RGB channels for image classification.
 
-broccoli.jpg(元画像)
+broccoli.jpg(original image)
 
 ![ori](images/broccoli.jpg)
 
