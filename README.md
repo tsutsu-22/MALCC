@@ -36,7 +36,10 @@ Run the following:
 python main.py
 ```
 
-
+# Where Results are
+```
+MALCC/results/bloccoli/merge/*.png
+```
 
 ## params
 You can change the following contents.
